@@ -1,0 +1,25 @@
+'''
+# Pasamos a obtener las métricas de LeaveOneOut()
+y_true, y_pred = list(), list()
+X_aux, y_aux = X.values, Y.values
+for train, test in loocv.split(X_aux):
+    # Calculamos el split (n-1 datos de entrenamiento, 1 de test)
+    X_tr, X_te = X_aux[train, :], X_aux[test, :]
+    y_tr, y_te = y_aux[train], y_aux[test]
+    # Ajustamos el modelo
+    model_knn.fit(X_tr, y_tr)
+    # Calculamos la predicción con el elemento de test
+    y_new = model_knn.predict(X_te)
+    # Nos quedamos con el valor verdadero y con el valor predicho
+    y_true.append(y_te[0])
+    y_pred.append(y_new[0])
+# Calculamos la matriz de confusión para un problema de clas. binaria
+zip_aux = zip(y_true, y_pred)
+conf_mat = np.zeros(shape = (2, 2))
+conf_mat[0, 0] = len(list(filter(lambda x: x[0] == x[1] == 1, zip_aux))) # TP
+conf_mat[0, 1] = len(list(filter(lambda x: x[0] != x[1] and x[1] == 1, zip_aux))) # FP
+conf_mat[1, 0] = len(list(filter(lambda x: x[0] != x[1] and x[1] == 0, zip_aux))) # FN 
+conf_mat[1, 1] = len(list(filter(lambda x: x[0] == x[1] == 0, zip_aux))) # TN
+# Mostramos la matriz obtenida
+conf_mat
+'''
